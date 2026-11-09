@@ -5,18 +5,15 @@
  */
 
 import { useState, type FormEvent } from 'react'
-import type { TaskStatus } from '../api'
+import type { TaskInput, TaskPriority, TaskStatus } from '../api'
 
 interface TaskFormProps {
-  onCreate: (input: {
-    title: string
-    description: string | null
-    status: TaskStatus
-  }) => Promise<void>
+  onCreate: (input: Required<TaskInput>) => Promise<void>
 }
 
 /**
- * Collect title, description and initial status, then delegate creation.
+ * Collect title, description, initial status, priority and due date, then
+ * delegate creation.
  *
  * @author Alfie
  */
@@ -24,6 +21,8 @@ export default function TaskForm({ onCreate }: TaskFormProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [status, setStatus] = useState<TaskStatus>('todo')
+  const [priority, setPriority] = useState<TaskPriority>('medium')
+  const [dueDate, setDueDate] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   /**
@@ -42,10 +41,14 @@ export default function TaskForm({ onCreate }: TaskFormProps) {
         title: title.trim(),
         description: description.trim() || null,
         status,
+        priority,
+        due_date: dueDate || null,
       })
       setTitle('')
       setDescription('')
       setStatus('todo')
+      setPriority('medium')
+      setDueDate('')
     } finally {
       setSubmitting(false)
     }
@@ -71,6 +74,23 @@ export default function TaskForm({ onCreate }: TaskFormProps) {
           <option value="doing">Doing</option>
           <option value="done">Done</option>
         </select>
+        <select
+          aria-label="Task priority"
+          className="select-input"
+          value={priority}
+          onChange={(event) => setPriority(event.target.value as TaskPriority)}
+        >
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <input
+          aria-label="Task due date"
+          className="text-input date-input"
+          type="date"
+          value={dueDate}
+          onChange={(event) => setDueDate(event.target.value)}
+        />
         <button className="primary-button" type="submit" disabled={!title.trim() || submitting}>
           {submitting ? 'Adding…' : 'Add task'}
         </button>
