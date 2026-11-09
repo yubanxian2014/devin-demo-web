@@ -84,6 +84,18 @@ h1 {
   gap: 10px;
 }
 
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #71717a;
+}
+
+.date-input {
+  width: auto;
+}
+
 .text-input,
 .select-input,
 .text-area {
@@ -217,6 +229,59 @@ h1 {
 .status-badge-done {
   background: #d1fae5;
   color: #065f46;
+}
+
+.priority-badge {
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.priority-badge-low {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+.priority-badge-medium {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.priority-badge-high {
+  background: #ffe4e6;
+  color: #9f1239;
+}
+
+.task-due-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #71717a;
+}
+
+.task-due-date-overdue {
+  color: #be123c;
+  font-weight: 600;
+}
+
+.overdue-label {
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: #be123c;
+  color: #ffffff;
+}
+
+.task-card.task-card-overdue {
+  border-color: #fda4af;
+  background: #fff7f8;
 }
 
 .task-card-actions {
