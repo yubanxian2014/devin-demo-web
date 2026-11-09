@@ -5,18 +5,23 @@
  */
 
 import { useState, type FormEvent } from 'react'
-import type { TaskStatus } from '../api'
+import type { TaskPriority, TaskStatus } from '../api'
+
+export interface TaskFormInput {
+  title: string
+  description: string | null
+  status: TaskStatus
+  priority: TaskPriority
+  due_date: string | null
+}
 
 interface TaskFormProps {
-  onCreate: (input: {
-    title: string
-    description: string | null
-    status: TaskStatus
-  }) => Promise<void>
+  onCreate: (input: TaskFormInput) => Promise<void>
 }
 
 /**
- * Collect title, description and initial status, then delegate creation.
+ * Collect title, description, initial status, priority and due date, then
+ * delegate creation.
  *
  * @author Alfie
  */
@@ -24,6 +29,8 @@ export default function TaskForm({ onCreate }: TaskFormProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [status, setStatus] = useState<TaskStatus>('todo')
+  const [priority, setPriority] = useState<TaskPriority>('medium')
+  const [dueDate, setDueDate] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   /**
@@ -42,10 +49,14 @@ export default function TaskForm({ onCreate }: TaskFormProps) {
         title: title.trim(),
         description: description.trim() || null,
         status,
+        priority,
+        due_date: dueDate || null,
       })
       setTitle('')
       setDescription('')
       setStatus('todo')
+      setPriority('medium')
+      setDueDate('')
     } finally {
       setSubmitting(false)
     }
@@ -74,6 +85,31 @@ export default function TaskForm({ onCreate }: TaskFormProps) {
         <button className="primary-button" type="submit" disabled={!title.trim() || submitting}>
           {submitting ? 'Adding…' : 'Add task'}
         </button>
+      </div>
+      <div className="task-form-row">
+        <label className="field-label">
+          Priority
+          <select
+            aria-label="Task priority"
+            className="select-input"
+            value={priority}
+            onChange={(event) => setPriority(event.target.value as TaskPriority)}
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </label>
+        <label className="field-label">
+          Due date
+          <input
+            aria-label="Task due date"
+            className="text-input date-input"
+            type="date"
+            value={dueDate}
+            onChange={(event) => setDueDate(event.target.value)}
+          />
+        </label>
       </div>
       <textarea
         aria-label="Task description"

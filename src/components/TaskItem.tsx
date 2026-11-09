@@ -4,7 +4,8 @@
  * @author Alfie
  */
 
-import type { Task, TaskStatus } from '../api'
+import type { Task, TaskPriority, TaskStatus } from '../api'
+import { isOverdue } from '../taskDates'
 
 interface TaskItemProps {
   task: Task
@@ -16,6 +17,12 @@ const STATUS_LABELS: Record<TaskStatus, string> = {
   todo: 'Todo',
   doing: 'Doing',
   done: 'Done',
+}
+
+const PRIORITY_LABELS: Record<TaskPriority, string> = {
+  low: 'Low',
+  medium: 'Medium',
+  high: 'High',
 }
 
 /**
@@ -36,16 +43,26 @@ function nextStatus(status: TaskStatus): TaskStatus | null {
  */
 export default function TaskItem({ task, onAdvance, onDelete }: TaskItemProps) {
   const next = nextStatus(task.status)
+  const overdue = isOverdue(task)
 
   return (
-    <article className={`task-card status-${task.status}`}>
+    <article className={`task-card status-${task.status}${overdue ? ' task-card-overdue' : ''}`}>
       <div className="task-card-main">
         <div className="task-card-heading">
           <h3>{task.title}</h3>
           <span className={`status-badge status-badge-${task.status}`}>
             {STATUS_LABELS[task.status]}
           </span>
+          <span className={`priority-badge priority-badge-${task.priority}`}>
+            {PRIORITY_LABELS[task.priority]} priority
+          </span>
         </div>
+        {task.due_date ? (
+          <p className={`task-due-date${overdue ? ' task-due-date-overdue' : ''}`}>
+            Due <time dateTime={task.due_date}>{task.due_date}</time>
+            {overdue ? <span className="overdue-label">Overdue</span> : null}
+          </p>
+        ) : null}
         {task.description ? <p className="task-description">{task.description}</p> : null}
       </div>
       <div className="task-card-actions">
