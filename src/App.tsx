@@ -11,12 +11,15 @@ import {
   listTasks,
   updateTask,
   type Task,
+  type TaskInput,
+  type TaskPriority,
   type TaskStatus,
 } from './api'
 import TaskForm from './components/TaskForm'
 import TaskList from './components/TaskList'
 
 type StatusFilter = TaskStatus | 'all'
+type PriorityFilter = TaskPriority | 'all'
 
 /**
  * Load tasks, create tasks and move them through the status workflow.
@@ -26,11 +29,12 @@ type StatusFilter = TaskStatus | 'all'
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [filter, setFilter] = useState<StatusFilter>('all')
+  const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>('all')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   /**
-   * Fetch tasks for the active filter.
+   * Fetch tasks for the active status and priority filters.
    *
    * @author Alfie
    */
@@ -38,14 +42,17 @@ export default function App() {
     setLoading(true)
     setError(null)
     try {
-      const next = await listTasks(filter === 'all' ? undefined : filter)
+      const next = await listTasks({
+        ...(filter === 'all' ? {} : { status: filter }),
+        ...(priorityFilter === 'all' ? {} : { priority: priorityFilter }),
+      })
       setTasks(next)
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Failed to load tasks')
     } finally {
       setLoading(false)
     }
-  }, [filter])
+  }, [filter, priorityFilter])
 
   useEffect(() => {
     void loadTasks()
@@ -56,11 +63,7 @@ export default function App() {
    *
    * @author Alfie
    */
-  async function handleCreate(input: {
-    title: string
-    description: string | null
-    status: TaskStatus
-  }) {
+  async function handleCreate(input: Required<TaskInput>) {
     await createTask(input)
     await loadTasks()
   }
@@ -100,7 +103,7 @@ export default function App() {
         </div>
         <div className="header-actions">
           <label className="filter-label" htmlFor="status-filter">
-            Filter
+            Status
           </label>
           <select
             id="status-filter"
@@ -112,6 +115,20 @@ export default function App() {
             <option value="todo">Todo</option>
             <option value="doing">Doing</option>
             <option value="done">Done</option>
+          </select>
+          <label className="filter-label" htmlFor="priority-filter">
+            Priority
+          </label>
+          <select
+            id="priority-filter"
+            className="select-input"
+            value={priorityFilter}
+            onChange={(event) => setPriorityFilter(event.target.value as PriorityFilter)}
+          >
+            <option value="all">All</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
           </select>
         </div>
       </header>

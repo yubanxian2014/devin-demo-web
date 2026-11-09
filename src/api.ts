@@ -6,11 +6,16 @@
 
 export type TaskStatus = 'todo' | 'doing' | 'done'
 
+export type TaskPriority = 'low' | 'medium' | 'high'
+
 export interface Task {
   id: number
   title: string
   description: string | null
   status: TaskStatus
+  priority: TaskPriority
+  /** Calendar date in `YYYY-MM-DD` form. */
+  due_date: string | null
   created_at: string
   updated_at: string
 }
@@ -19,6 +24,13 @@ export interface TaskInput {
   title: string
   description?: string | null
   status?: TaskStatus
+  priority?: TaskPriority
+  due_date?: string | null
+}
+
+export interface TaskFilters {
+  status?: TaskStatus
+  priority?: TaskPriority
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
@@ -50,13 +62,16 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 }
 
 /**
- * List tasks, optionally filtered by status.
+ * List tasks, optionally filtered by status and priority.
  *
  * @author Alfie
  */
-export function listTasks(status?: TaskStatus): Promise<Task[]> {
-  const query = status ? `?status=${encodeURIComponent(status)}` : ''
-  return request<Task[]>(`/tasks${query}`)
+export function listTasks(filters: TaskFilters = {}): Promise<Task[]> {
+  const params = new URLSearchParams()
+  if (filters.status) params.set('status', filters.status)
+  if (filters.priority) params.set('priority', filters.priority)
+  const query = params.toString()
+  return request<Task[]>(`/tasks${query ? `?${query}` : ''}`)
 }
 
 /**

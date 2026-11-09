@@ -219,6 +219,70 @@ h1 {
   color: #065f46;
 }
 
+.priority-badge {
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.priority-badge-low {
+  background: #f0f9ff;
+  color: #0369a1;
+  border-color: #bae6fd;
+}
+
+.priority-badge-medium {
+  background: #eef2ff;
+  color: #4338ca;
+  border-color: #c7d2fe;
+}
+
+.priority-badge-high {
+  background: #fff7ed;
+  color: #c2410c;
+  border-color: #fed7aa;
+}
+
+.task-due-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 0;
+  color: #71717a;
+  font-size: 13px;
+}
+
+.task-due-date-overdue {
+  color: #be123c;
+  font-weight: 600;
+}
+
+.overdue-badge {
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: #be123c;
+  color: #ffffff;
+}
+
+.task-card.task-card-overdue {
+  border-color: #fecdd3;
+  border-left: 3px solid #e11d48;
+  background: #fff7f8;
+}
+
+.date-input {
+  width: auto;
+  min-width: 150px;
+}
+
 .task-card-actions {
   display: flex;
   gap: 8px;
@@ -254,7 +318,8 @@ h1 {
     flex-direction: column;
   }
 
-  .select-input {
+  .select-input,
+  .date-input {
     width: 100%;
   }
 }
